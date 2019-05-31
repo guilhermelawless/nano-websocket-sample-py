@@ -14,6 +14,6 @@ Install requirements (**websockets** module) with `pip3 install --user -r requir
 
 Read the websocket server documentation at https://github.com/nanocurrency/nano-node/wiki/WebSockets
 
-Check `python3 sample_client.py --help` for client usage.
+Check `python3 client.py --help` for client usage.
 
-Run with `python3 sample_client.py`
+Run with `python3 client.py`
