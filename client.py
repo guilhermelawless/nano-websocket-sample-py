@@ -17,17 +17,23 @@ def subscription(topic: str, ack: bool=False, options: dict=None):
         d["options"] = options
     return d
 
+def update(topic: str, options: dict, ack: bool=False):
+    return {"action": "update", "topic": topic, "ack": ack, "options": options}
+
+def pretty(message):
+    return json.dumps(message, indent=4)
 
 async def main():
     async with websockets.connect(f"ws://{args.host}:{args.port}") as websocket:
 
         # Subscribe to both confirmation and votes
         # You can also add options here following instructions in
-        #   https://github.com/nanocurrency/nano-node/wiki/WebSockets
+        # https://docs.nano.org/integration-guides/websockets/
 
-        await websocket.send(json.dumps(subscription("vote", ack=True)))
-        print(await websocket.recv())  # ack
-        await websocket.send(json.dumps(subscription("confirmation", ack=True)))
+        await websocket.send(json.dumps(subscription("confirmation", options={"include_election_info": "false", "include_block":"true"}, ack=True)))
+        print(await websocket.recv()) # ack
+
+        await websocket.send(json.dumps(subscription("work", ack=True)))
         print(await websocket.recv())  # ack
 
         while 1:
@@ -35,17 +41,16 @@ async def main():
             topic = rec.get("topic", None)
             if topic:
                 message = rec["message"]
-                if topic == "vote":
-                    print("Vote from {} for blocks:\n\t{}".format(message["account"], message["blocks"]))
-
-                elif topic == "confirmation":
-                    print("Block confirmed: {}".format(message))
-
+                if topic == "confirmation":
+                    print("Block confirmed:\n {}".format(pretty(message)))
+                elif topic == "work":
+                    print("Work:\n {}".format(pretty(message)))
+                else:
+                    print(topic, pretty(message))
 
 try:
     asyncio.get_event_loop().run_until_complete(main())
 except KeyboardInterrupt:
     pass
 except ConnectionRefusedError:
-    print("Error connecting to websocket server. Make sure you have enabled it in ~/Nano/config.json and check "
-          "./sample_client.py --help")
+    print("Error connecting to websocket server. [node.websocket] enable=true must be set in ~/Nano/config-node.toml ; see host/port options with ./client.py --help")
