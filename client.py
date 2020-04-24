@@ -33,8 +33,9 @@ async def main():
         await websocket.send(json.dumps(subscription("confirmation", options={"include_election_info": "false", "include_block":"true"}, ack=True)))
         print(await websocket.recv()) # ack
 
-        await websocket.send(json.dumps(subscription("work", ack=True)))
-        print(await websocket.recv())  # ack
+        # V21.0+
+        # await websocket.send(json.dumps(subscription("work", ack=True)))
+        # print(await websocket.recv())  # ack
 
         while 1:
             rec = json.loads(await websocket.recv())
