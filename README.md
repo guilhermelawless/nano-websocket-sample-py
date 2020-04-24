@@ -3,9 +3,9 @@
 
 ## Requirements
 
-- Python 3.6 or greater.
-- Nano node v19 or greater.
-- Websocket server enabled in *~/Nano/config.json*
+- Python 3.6 or greater
+- Nano node v19 or greater
+- Websocket server enabled in *~/Nano/config-node.toml* (`[node.websocket] enable = true`)
 
 Install requirements (**websockets** module) with `pip3 install --user -r requirements.txt`
 
