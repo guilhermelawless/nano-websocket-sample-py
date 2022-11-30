@@ -50,7 +50,7 @@ async def main():
                     print(topic, pretty(message))
 
 try:
-    asyncio.get_event_loop().run_until_complete(main())
+    asyncio.run(main())
 except KeyboardInterrupt:
     pass
 except ConnectionRefusedError:
